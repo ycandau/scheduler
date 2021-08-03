@@ -181,6 +181,22 @@ storiesOf('Appointment', module)
       onClose={action('onClose')}
     />
   ))
+  .add('Form Create', () => (
+    <Form
+      interviewers={interviewers}
+      onSave={action('onSave')}
+      onCancel={action('onCancel')}
+    />
+  ))
+  .add('Form Edit', () => (
+    <Form
+      name="Lydia Miller-Jones"
+      interviewers={interviewers}
+      interviewer={2}
+      onSave={action('onSave')}
+      onCancel={action('onCancel')}
+    />
+  ))
   .add('Show', () => (
     <Show
       student="Lydia Miller-Jones"
