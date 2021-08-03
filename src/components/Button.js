@@ -4,6 +4,7 @@ import classNames from 'classnames';
 import 'components/Button.scss';
 
 //------------------------------------------------------------------------------
+// Button component
 
 const Button = function (props) {
   const buttonClass = classNames('button', {

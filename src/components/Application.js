@@ -26,7 +26,7 @@ const days = [
 ];
 
 //------------------------------------------------------------------------------
-// Main function
+// Application
 
 const Application = function (props) {
   const [day, setDay] = useState('Monday');
