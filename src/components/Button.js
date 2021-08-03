@@ -3,6 +3,8 @@ import classNames from 'classnames';
 
 import 'components/Button.scss';
 
+//------------------------------------------------------------------------------
+
 const Button = function (props) {
   const buttonClass = classNames('button', {
     'button--confirm': props.confirm,
