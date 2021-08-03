@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import 'components/Application.scss';
 
 import DayList from './DayList';
+import Appointment from './Appointment';
 
 //------------------------------------------------------------------------------
 // Mock data
@@ -23,12 +24,61 @@ const days = [
     name: 'Wednesday',
     spots: 0,
   },
+  {
+    id: 4,
+    name: 'Thursday',
+    spots: 2,
+  },
+  {
+    id: 5,
+    name: 'Friday',
+    spots: 0,
+  },
+];
+
+const appointments = [
+  {
+    id: 1,
+    time: '12pm',
+  },
+  {
+    id: 2,
+    time: '1pm',
+    interview: {
+      student: 'Lydia Miller-Jones',
+      interviewer: {
+        id: 1,
+        name: 'Sylvia Palmer',
+        avatar: 'https://i.imgur.com/LpaY82x.png',
+      },
+    },
+  },
+  {
+    id: 3,
+    time: '2pm',
+  },
+  {
+    id: 4,
+    time: '3pm',
+    interview: {
+      student: 'Albert Alpert',
+      interviewer: {
+        id: 2,
+        name: 'Norma Mornan',
+        avatar: 'https://i.imgur.com/LpaY82x.png',
+      },
+    },
+  },
+  {
+    id: 5,
+    time: '4pm',
+  },
 ];
 
 //------------------------------------------------------------------------------
 // Application
 
-const Application = function (props) {
+const Application = (props) => {
   const [day, setDay] = useState('Monday');
 
   return (
@@ -54,8 +104,13 @@ const Application = function (props) {
           alt="Lighthouse Labs"
         />
       </section>
+
+      {/* Schedule */}
       <section className="schedule">
-        {/* Replace this with the schedule elements durint the "The Scheduler" activity. */}
+        {appointments.map((appointment) => (
+          <Appointment key={appointment.id} {...appointment} />
+        ))}
+        <Appointment key="last" time="5pm" />
       </section>
     </main>
   );
