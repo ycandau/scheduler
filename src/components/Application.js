@@ -34,15 +34,20 @@ const Application = function (props) {
   return (
     <main className="layout">
       <section className="sidebar">
+        {/* Top image */}
         <img
           className="sidebar--centered"
           src="images/logo.png"
           alt="Interview Scheduler"
         />
         <hr className="sidebar__separator sidebar--centered" />
+
+        {/* Day List */}
         <nav className="sidebar__menu">
-          <DayList days={days} day={day} setDay={setDay} />
+          <DayList days={days} value={day} onChange={setDay} />
         </nav>
+
+        {/* Bottom image */}
         <img
           className="sidebar__lhl sidebar--centered"
           src="images/lhl.png"

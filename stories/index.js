@@ -44,7 +44,11 @@ storiesOf('DayListItem', module)
   .add('Selected', () => <DayListItem name="Monday" spots={5} selected />)
   .add('Full', () => <DayListItem name="Monday" spots={0} />)
   .add('Clickable', () => (
-    <DayListItem name="Tuesday" setDay={action('setDay')} spots={5} />
+    <DayListItem
+      name="Tuesday"
+      spots={5}
+      setDay={() => action('setDay')('Tuesday')}
+    />
   ));
 
 //------------------------------------------------------------------------------
@@ -73,10 +77,10 @@ storiesOf('DayList', module)
     backgrounds: [{ name: 'dark', value: '#222f3e', default: true }],
   })
   .add('Monday', () => (
-    <DayList days={days} day={'Monday'} setDay={action('setDay')} />
+    <DayList days={days} value={'Monday'} onChange={action('onChange')} />
   ))
   .add('Tuesday', () => (
-    <DayList days={days} day={'Tuesday'} setDay={action('setDay')} />
+    <DayList days={days} value={'Tuesday'} onChange={action('onChange')} />
   ));
 
 //------------------------------------------------------------------------------
@@ -134,13 +138,13 @@ storiesOf('InterviewerList', module)
   .add('Initial', () => (
     <InterviewerList
       interviewers={interviewers}
-      setInterviewer={action('setInterviewer')}
+      onChange={action('onChange')}
     />
   ))
   .add('Preselected', () => (
     <InterviewerList
       interviewers={interviewers}
-      interviewer={3}
-      setInterviewer={action('setInterviewer')}
+      value={3}
+      onChange={action('onChange')}
     />
   ));
