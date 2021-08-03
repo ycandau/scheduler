@@ -24,7 +24,7 @@ import InterviewerList from '../InterviewerList';
 //   - setName(): Function
 //   - setInterviewer(): Function
 
-const Form = function (props) {
+const Form = (props) => {
   const [name, setName] = useState(props.name || '');
   const [interviewer, setInterviewer] = useState(props.interviewer || null);
 

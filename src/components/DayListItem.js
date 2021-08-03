@@ -10,7 +10,7 @@ import 'components/DayListItem.scss';
 //   - selected: Boolean
 //   - setDay(): Function
 
-const DayListItem = function (props) {
+const DayListItem = (props) => {
   const formatSpots = (spots) =>
     spots === 0 ? 'no spots' : spots === 1 ? '1 spot' : `${spots} spots`;
 

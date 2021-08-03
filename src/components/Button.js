@@ -6,7 +6,7 @@ import 'components/Button.scss';
 //------------------------------------------------------------------------------
 // Button component
 
-const Button = function (props) {
+const Button = (props) => {
   const buttonClass = classNames('button', {
     'button--confirm': props.confirm,
     'button--danger': props.danger,

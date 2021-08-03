@@ -10,7 +10,7 @@ import 'components/InterviewerListItem.scss';
 //   - selected: Boolean
 //   - setInterviewer(): Function
 
-const InterviewerListItem = function (props) {
+const InterviewerListItem = (props) => {
   const interviewerClass = classNames('interviewers__item', {
     'interviewers__item--selected': props.selected,
   });
