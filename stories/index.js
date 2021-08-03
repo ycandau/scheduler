@@ -167,7 +167,20 @@ storiesOf('Appointment', module)
   .add('Appointment', () => <Appointment />)
   .add('Appointment with time', () => <Appointment time="12pm" />)
   .add('Header', () => <Header time="12pm" />)
+  .add('Confirm', () => (
+    <Confirm
+      message="Delete the appointment?"
+      onConfirm={action('onConfirm')}
+      onCancel={action('onCancel')}
+    />
+  ))
   .add('Empty', () => <Empty onAdd={action('onAdd')} />)
+  .add('Error', () => (
+    <Error
+      message="Could not delete appointment."
+      onClose={action('onClose')}
+    />
+  ))
   .add('Show', () => (
     <Show
       student="Lydia Miller-Jones"
@@ -176,10 +189,4 @@ storiesOf('Appointment', module)
       onDelete={action('onDelete')}
     />
   ))
-  .add('Confirm', () => (
-    <Confirm
-      message="Delete the appointment?"
-      onConfirm={action('onConfirm')}
-      onCancel={action('onCancel')}
-    />
-  ));
+  .add('Status', () => <Status message="Deleting" />);
