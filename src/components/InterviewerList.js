@@ -8,17 +8,17 @@ import 'components/InterviewerList.scss';
 // Props:
 //   - interviewers: Array
 //   - interviewer: String
-//   - setInterviewer: Function
+//   - setInterviewer(): Function
 
 const InterviewerList = function (props) {
-  const interviewerListItems = props.interviewers.map((int) => (
+  const interviewerListItems = props.interviewers.map((interviewer) => (
     <InterviewerListItem
-      id={int.id}
-      name={int.name}
-      avatar={int.avatar}
-      selected={props.interviewer === int.id}
-      setInterviewer={props.setInterviewer}
-    ></InterviewerListItem>
+      key={interviewer.id}
+      name={interviewer.name}
+      avatar={interviewer.avatar}
+      selected={props.interviewer === interviewer.id}
+      setInterviewer={() => props.setInterviewer(interviewer.id)}
+    />
   ));
 
   return (
