@@ -4,6 +4,11 @@ import classNames from 'classnames';
 import 'components/DayListItem.scss';
 
 //------------------------------------------------------------------------------
+// Props:
+//   - name: String
+//   - spots: Number
+//   - selected: Boolean
+//   - setDay(): Function
 
 const DayListItem = function (props) {
   const formatSpots = (spots) =>
