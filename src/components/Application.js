@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import axios from 'axios';
 
 import 'components/Application.scss';
 
@@ -6,35 +7,14 @@ import DayList from './DayList';
 import Appointment from './Appointment';
 
 //------------------------------------------------------------------------------
-// Mock data
+// Constants
 
-const days = [
-  {
-    id: 1,
-    name: 'Monday',
-    spots: 2,
-  },
-  {
-    id: 2,
-    name: 'Tuesday',
-    spots: 5,
-  },
-  {
-    id: 3,
-    name: 'Wednesday',
-    spots: 0,
-  },
-  {
-    id: 4,
-    name: 'Thursday',
-    spots: 2,
-  },
-  {
-    id: 5,
-    name: 'Friday',
-    spots: 0,
-  },
-];
+const HOST = 'http://localhost';
+const PORT = 8001;
+const URL = `${HOST}:${PORT}`;
+
+//------------------------------------------------------------------------------
+// Mock data
 
 const appointments = [
   {
@@ -79,7 +59,15 @@ const appointments = [
 // Application
 
 const Application = (props) => {
+  const [days, setDays] = useState([]);
   const [day, setDay] = useState('Monday');
+
+  useEffect(() => {
+    axios
+      .get(`${URL}/api/days`)
+      .then((res) => setDays(() => [...res.data]))
+      .catch((err) => console.error(err));
+  }, []); // Run only once
 
   return (
     <main className="layout">
