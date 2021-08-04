@@ -8,4 +8,11 @@ const getAppointmentsForDay = (state, day) => {
   return appointments.map((id) => state.appointments[id]);
 };
 
-export { getAppointmentsForDay };
+const getInterview = (state, interview) =>
+  (interview && {
+    ...interview,
+    interviewer: state.interviewers[interview.interviewer],
+  }) ||
+  null;
+
+export { getAppointmentsForDay, getInterview };
