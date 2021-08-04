@@ -1,3 +1,10 @@
+//------------------------------------------------------------------------------
+// Application.js
+//------------------------------------------------------------------------------
+
+//------------------------------------------------------------------------------
+// Import
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 
@@ -5,6 +12,7 @@ import 'components/Application.scss';
 
 import DayList from './DayList';
 import Appointment from './Appointment';
+import { getAppointmentsForDay } from '../helpers/selectors';
 
 //------------------------------------------------------------------------------
 // Constants
@@ -14,51 +22,10 @@ const PORT = 8001;
 const URL = `${HOST}:${PORT}`;
 
 //------------------------------------------------------------------------------
-// Mock data
-
-const appointments = [
-  {
-    id: 1,
-    time: '12pm',
-  },
-  {
-    id: 2,
-    time: '1pm',
-    interview: {
-      student: 'Lydia Miller-Jones',
-      interviewer: {
-        id: 1,
-        name: 'Sylvia Palmer',
-        avatar: 'https://i.imgur.com/LpaY82x.png',
-      },
-    },
-  },
-  {
-    id: 3,
-    time: '2pm',
-  },
-  {
-    id: 4,
-    time: '3pm',
-    interview: {
-      student: 'Albert Alpert',
-      interviewer: {
-        id: 2,
-        name: 'Norma Mornan',
-        avatar: 'https://i.imgur.com/LpaY82x.png',
-      },
-    },
-  },
-  {
-    id: 5,
-    time: '4pm',
-  },
-];
-
-//------------------------------------------------------------------------------
 // Application
 
 const Application = (props) => {
+  // Manage state
   const [state, setState] = useState({
     day: 'Monday',
     days: [],
@@ -67,14 +34,20 @@ const Application = (props) => {
 
   const setDay = (day) => setState((prev) => ({ ...prev, day }));
 
-  const setDays = (days) => setState((prev) => ({ ...prev, days }));
-
+  // Side effects
   useEffect(() => {
-    axios
-      .get(`${URL}/api/days`)
-      .then((res) => setDays(res.data))
+    Promise.all([
+      axios.get(`${URL}/api/days`),
+      axios.get(`${URL}/api/appointments`),
+    ])
+      .then(([{ data: days }, { data: appointments }]) => {
+        console.log(days, appointments);
+        setState((prev) => ({ ...prev, days, appointments }));
+      })
       .catch((err) => console.error(err));
   }, []); // Run only once
+
+  const dailyAppointments = getAppointmentsForDay(state, state.day);
 
   return (
     <main className="layout">
@@ -102,7 +75,7 @@ const Application = (props) => {
 
       {/* Schedule */}
       <section className="schedule">
-        {appointments.map((appointment) => (
+        {dailyAppointments.map((appointment) => (
           <Appointment key={appointment.id} {...appointment} />
         ))}
         <Appointment key="last" time="5pm" />
