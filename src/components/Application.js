@@ -59,13 +59,20 @@ const appointments = [
 // Application
 
 const Application = (props) => {
-  const [days, setDays] = useState([]);
-  const [day, setDay] = useState('Monday');
+  const [state, setState] = useState({
+    day: 'Monday',
+    days: [],
+    appointments: {},
+  });
+
+  const setDay = (day) => setState((prev) => ({ ...prev, day }));
+
+  const setDays = (days) => setState((prev) => ({ ...prev, days }));
 
   useEffect(() => {
     axios
       .get(`${URL}/api/days`)
-      .then((res) => setDays(() => [...res.data]))
+      .then((res) => setDays(res.data))
       .catch((err) => console.error(err));
   }, []); // Run only once
 
@@ -82,7 +89,7 @@ const Application = (props) => {
 
         {/* Day List */}
         <nav className="sidebar__menu">
-          <DayList days={days} value={day} onChange={setDay} />
+          <DayList days={state.days} value={state.day} onChange={setDay} />
         </nav>
 
         {/* Bottom image */}
