@@ -9,7 +9,6 @@ const useVisualMode = (initial) => {
   const transition = (newMode, replace = false) => {
     setMode(() => newMode);
     setHistory((prev) => {
-      const end = replace ? -1 : history.length;
       const newHistory = prev.slice(0, history.length - replace);
       newHistory.push(newMode);
       return newHistory;
