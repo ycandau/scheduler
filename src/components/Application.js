@@ -13,7 +13,11 @@ import 'components/Application.scss';
 import DayList from './DayList';
 import Appointment from './Appointment';
 
-import { getAppointmentsForDay, getInterview } from '../helpers/selectors';
+import {
+  getAppointmentsForDay,
+  getInterviewersForDay,
+  getInterview,
+} from '../helpers/selectors';
 
 //------------------------------------------------------------------------------
 // Constants
@@ -58,6 +62,7 @@ const Application = (props) => {
       interview: getInterview(state, appointment.interview),
     })
   );
+  const interviewers = getInterviewersForDay(state, state.day);
 
   // Assemble component
   return (
@@ -87,7 +92,11 @@ const Application = (props) => {
       {/* Schedule */}
       <section className="schedule">
         {appointments.map((appointment) => (
-          <Appointment key={appointment.id} {...appointment} />
+          <Appointment
+            key={appointment.id}
+            interviewers={interviewers}
+            {...appointment}
+          />
         ))}
         <Appointment key="last" time="5pm" />
       </section>

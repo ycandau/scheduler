@@ -16,8 +16,7 @@ import useVisualMode from '../../hooks/useVisualMode';
 // Props:
 //   - time: String
 //   - interview: Object
-//   ??? onEdit(): Function
-//   ??? onDelete(): Function
+//   - interviewers
 
 const Appointment = (props) => {
   const CONFIRM = 'CONFIRM';
@@ -53,8 +52,7 @@ const Appointment = (props) => {
       )}
       {mode === CREATE && (
         <Form
-          // interviewers={props.interview.interviewer}
-          interviewers={[]}
+          interviewers={props.interviewers}
           onSave={'onSave'}
           onCancel={onCancel}
         />
