@@ -40,8 +40,10 @@ const Appointment = (props) => {
   const cancel = () => back();
 
   const save = (name, interviewer) => {
-    props.bookInterview(props.id, { student: name, interviewer });
-    transition(SHOW);
+    transition(SAVING);
+    props
+      .bookInterview(props.id, { student: name, interviewer })
+      .then(() => transition(SHOW));
   };
 
   // Assemble component
@@ -64,6 +66,8 @@ const Appointment = (props) => {
           onCancel={cancel}
         />
       )}
+      {mode === SAVING && <Status message="Saving" />}
+      {mode === DELETING && <Status message="Deleting" />}
       {/* {mode === EDIT && (
         <Form
           name="Lydia Miller-Jones"
@@ -73,15 +77,13 @@ const Appointment = (props) => {
           onCancel={'onCancel'}
         />
       )}
-      {mode === DELETING && <Status message="Deleting" />}
       {mode === CONFIRM && (
         <Confirm
           message="Delete the appointment?"
           onConfirm={'onConfirm'}
           onCancel={'onCancel'}
         />
-      )}
-      {mode === SAVING && <Status message="Deleting" />} */}
+      )} */}
     </article>
   );
 };

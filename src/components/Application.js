@@ -46,7 +46,6 @@ const Application = (props) => {
     ])
       .then(
         ([{ data: days }, { data: appointments }, { data: interviewers }]) => {
-          console.log(days, appointments);
           setState((prev) => ({ ...prev, days, appointments, interviewers }));
         }
       )
@@ -68,7 +67,7 @@ const Application = (props) => {
 
   // Book interview >> Appointment
   const bookInterview = (id, interview) => {
-    console.log(id, interview);
+    // Prepare new state
     const appointment = {
       ...state.appointments[id],
       interview: { ...interview },
@@ -77,7 +76,12 @@ const Application = (props) => {
       ...state.appointments,
       [id]: appointment,
     };
-    setState((prev) => ({ ...prev, appointments }));
+
+    // @todo: Confirm this
+    return axios
+      .put(`${URL}/api/appointments/${id}`, { interview })
+      .then(() => setState((prev) => ({ ...prev, appointments })))
+      .catch((err) => console.error(err));
   };
 
   // Assemble component
