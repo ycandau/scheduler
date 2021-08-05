@@ -14,9 +14,11 @@ import useVisualMode from '../../hooks/useVisualMode';
 
 //------------------------------------------------------------------------------
 // Props:
+//   - id: Number
 //   - time: String
 //   - interview: Object
-//   - interviewers
+//   - interviewers: Array
+//   - bookInterview: Function()
 
 const Appointment = (props) => {
   const CONFIRM = 'CONFIRM';
@@ -28,20 +30,25 @@ const Appointment = (props) => {
   const SAVING = 'SAVING';
   const DELETING = 'DELETE';
 
-  // Custom hook
+  // Use custom hook to manage display mode
   const { mode, transition, back } = useVisualMode(
     props.interview ? SHOW : EMPTY
   );
 
-  // State transitions
-  const onAdd = () => transition(CREATE);
-  const onCancel = () => back();
+  // Define state transition handlers
+  const add = () => transition(CREATE);
+  const cancel = () => back();
+
+  const save = (name, interviewer) => {
+    props.bookInterview(props.id, { student: name, interviewer });
+    transition(SHOW);
+  };
 
   // Assemble component
   return (
     <article className="appointment">
       <Header time={props.time} />
-      {mode === EMPTY && <Empty onAdd={onAdd} />}
+      {mode === EMPTY && <Empty onAdd={add} />}
       {mode === SHOW && (
         <Show
           student={props.interview.student}
@@ -53,8 +60,8 @@ const Appointment = (props) => {
       {mode === CREATE && (
         <Form
           interviewers={props.interviewers}
-          onSave={'onSave'}
-          onCancel={onCancel}
+          onSave={save}
+          onCancel={cancel}
         />
       )}
       {/* {mode === EDIT && (

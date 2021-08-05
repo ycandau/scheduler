@@ -30,16 +30,14 @@ const URL = `${HOST}:${PORT}`;
 // Application
 
 const Application = (props) => {
-  // Manage state
+  // Set state
   const [state, setState] = useState({
     day: 'Monday',
     days: [],
     appointments: {},
   });
 
-  const setDay = (day) => setState((prev) => ({ ...prev, day }));
-
-  // Side effects
+  // Fetch data
   useEffect(() => {
     Promise.all([
       axios.get(`${URL}/api/days`),
@@ -56,13 +54,31 @@ const Application = (props) => {
   }, []); // Run only once
 
   // Process data with selectors
+  const interviewers = getInterviewersForDay(state, state.day);
+
   const appointments = getAppointmentsForDay(state, state.day).map(
     (appointment) => ({
       ...appointment,
       interview: getInterview(state, appointment.interview),
     })
   );
-  const interviewers = getInterviewersForDay(state, state.day);
+
+  // Define event handlers
+  const setDay = (day) => setState((prev) => ({ ...prev, day }));
+
+  // Book interview >> Appointment
+  const bookInterview = (id, interview) => {
+    console.log(id, interview);
+    const appointment = {
+      ...state.appointments[id],
+      interview: { ...interview },
+    };
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment,
+    };
+    setState((prev) => ({ ...prev, appointments }));
+  };
 
   // Assemble component
   return (
@@ -95,6 +111,7 @@ const Application = (props) => {
           <Appointment
             key={appointment.id}
             interviewers={interviewers}
+            bookInterview={bookInterview}
             {...appointment}
           />
         ))}
