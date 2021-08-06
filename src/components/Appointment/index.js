@@ -22,14 +22,15 @@ import useVisualMode from '../../hooks/useVisualMode';
 //   - cancelInterview(): Function
 
 const Appointment = (props) => {
-  const CONFIRM = 'CONFIRM';
   const EMPTY = 'EMPTY';
-  const ERROR = 'ERROR';
+  const SHOW = 'SHOW';
   const CREATE = 'CREATE';
   const EDIT = 'EDIT';
-  const SHOW = 'SHOW';
+  const CONFIRM = 'CONFIRM';
   const SAVING = 'SAVING';
-  const DELETING = 'DELETE';
+  const DELETING = 'DELETING';
+  const ERROR_SAVE = 'ERROR_SAVE';
+  const ERROR_DELETE = 'ERROR_DELETE';
 
   // Use custom hook to manage display mode
   const { mode, transition, back } = useVisualMode(
@@ -43,15 +44,22 @@ const Appointment = (props) => {
   const onDelete = () => transition(CONFIRM);
 
   const onSave = (name, interviewerId) => {
+    const interview = { student: name, interviewer: interviewerId };
+    const replace = true;
     transition(SAVING);
     props
-      .bookInterview(props.id, { student: name, interviewer: interviewerId })
-      .then(() => transition(SHOW));
+      .bookInterview(props.id, interview)
+      .then(() => transition(SHOW))
+      .catch((err) => transition(ERROR_SAVE, replace));
   };
 
   const onConfirm = () => {
-    transition(DELETING);
-    props.cancelInterview(props.id).then(() => transition(EMPTY));
+    const replace = true;
+    transition(DELETING, replace);
+    props
+      .cancelInterview(props.id)
+      .then(() => transition(EMPTY))
+      .catch((err) => transition(ERROR_DELETE, replace));
   };
 
   // Assemble component
@@ -91,6 +99,12 @@ const Appointment = (props) => {
           onConfirm={onConfirm}
           onCancel={onCancel}
         />
+      )}
+      {mode === ERROR_SAVE && (
+        <Error message="Could not book the appointment." onClose={onCancel} />
+      )}
+      {mode === ERROR_DELETE && (
+        <Error message="Could not cancel the appointment." onClose={onCancel} />
       )}
     </article>
   );

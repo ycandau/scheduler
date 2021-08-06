@@ -79,8 +79,7 @@ const Application = (props) => {
     // Return promise so function is thenable
     return axios
       .put(`${URL}/api/appointments/${id}`, { interview })
-      .then(() => setState((prev) => ({ ...prev, appointments })))
-      .catch((err) => console.error(err));
+      .then(() => setState((prev) => ({ ...prev, appointments })));
   };
 
   // Cancel interview
@@ -97,8 +96,7 @@ const Application = (props) => {
     // Return promise so function is thenable
     return axios
       .delete(`${URL}/api/appointments/${id}`)
-      .then(() => setState((prev) => ({ ...prev, appointments })))
-      .catch((err) => console.error(err));
+      .then(() => setState((prev) => ({ ...prev, appointments })));
   };
 
   // Assemble component
