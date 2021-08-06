@@ -50,7 +50,7 @@ const Application = (props) => {
         }
       )
       .catch((err) => console.error(err));
-  }, []); // Run only once
+  }, []); // Run only on initial render
 
   // Process data with selectors
   const interviewers = getInterviewersForDay(state, state.day);
@@ -65,9 +65,8 @@ const Application = (props) => {
   // Define event handlers
   const setDay = (day) => setState((prev) => ({ ...prev, day }));
 
-  // Book interview >> Appointment
+  // Book interview
   const bookInterview = (id, interview) => {
-    // Prepare new state
     const appointment = {
       ...state.appointments[id],
       interview: { ...interview },
@@ -77,9 +76,27 @@ const Application = (props) => {
       [id]: appointment,
     };
 
-    // @todo: Confirm this
+    // Return promise so function is thenable
     return axios
       .put(`${URL}/api/appointments/${id}`, { interview })
+      .then(() => setState((prev) => ({ ...prev, appointments })))
+      .catch((err) => console.error(err));
+  };
+
+  // Cancel interview
+  const cancelInterview = (id) => {
+    const appointment = {
+      ...state.appointments[id],
+      interview: null,
+    };
+    const appointments = {
+      ...state.appointments,
+      [id]: appointment,
+    };
+
+    // Return promise so function is thenable
+    return axios
+      .delete(`${URL}/api/appointments/${id}`)
       .then(() => setState((prev) => ({ ...prev, appointments })))
       .catch((err) => console.error(err));
   };
@@ -116,6 +133,7 @@ const Application = (props) => {
             key={appointment.id}
             interviewers={interviewers}
             bookInterview={bookInterview}
+            cancelInterview={cancelInterview}
             {...appointment}
           />
         ))}

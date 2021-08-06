@@ -18,7 +18,8 @@ import useVisualMode from '../../hooks/useVisualMode';
 //   - time: String
 //   - interview: Object
 //   - interviewers: Array
-//   - bookInterview: Function()
+//   - bookInterview(): Function
+//   - cancelInterview(): Function
 
 const Appointment = (props) => {
   const CONFIRM = 'CONFIRM';
@@ -36,34 +37,44 @@ const Appointment = (props) => {
   );
 
   // Define state transition handlers
-  const add = () => transition(CREATE);
-  const cancel = () => back();
+  const onCancel = () => back();
+  const onAdd = () => transition(CREATE);
+  const onDelete = () => transition(CONFIRM);
 
-  const save = (name, interviewer) => {
+  const onSave = (name, interviewer) => {
     transition(SAVING);
     props
       .bookInterview(props.id, { student: name, interviewer })
       .then(() => transition(SHOW));
   };
 
+  const onConfirm = () => {
+    transition(DELETING);
+    props.cancelInterview(props.id).then(() => transition(EMPTY));
+  };
+
+  const onEdit = () => {
+    //
+  };
+
   // Assemble component
   return (
     <article className="appointment">
       <Header time={props.time} />
-      {mode === EMPTY && <Empty onAdd={add} />}
+      {mode === EMPTY && <Empty onAdd={onAdd} />}
       {mode === SHOW && (
         <Show
           student={props.interview.student}
           interviewer={props.interview.interviewer}
-          onEdit={props.onEdit}
-          onDelete={props.onDelete}
+          onEdit={onEdit}
+          onDelete={onDelete}
         />
       )}
       {mode === CREATE && (
         <Form
           interviewers={props.interviewers}
-          onSave={save}
-          onCancel={cancel}
+          onSave={onSave}
+          onCancel={onCancel}
         />
       )}
       {mode === SAVING && <Status message="Saving" />}
@@ -76,14 +87,14 @@ const Appointment = (props) => {
           onSave={'onSave'}
           onCancel={'onCancel'}
         />
-      )}
+      )} */}
       {mode === CONFIRM && (
         <Confirm
           message="Delete the appointment?"
-          onConfirm={'onConfirm'}
-          onCancel={'onCancel'}
+          onConfirm={onConfirm}
+          onCancel={onCancel}
         />
-      )} */}
+      )}
     </article>
   );
 };
