@@ -5,101 +5,57 @@
 //------------------------------------------------------------------------------
 // Import
 
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+// Packages
+import React from 'react';
 
+// Styles
 import 'components/Application.scss';
 
+// Components
 import DayList from './DayList';
 import Appointment from './Appointment';
 
+// Hooks
+import useApplicationData from '../hooks/useApplicationData';
+
+// Selectors
 import {
-  getAppointmentsForDay,
-  getInterviewersForDay,
   getInterview,
+  getInterviewersForDay,
+  getAppointmentsForDay,
 } from '../helpers/selectors';
-
-//------------------------------------------------------------------------------
-// Constants
-
-const HOST = 'http://localhost';
-const PORT = 8001;
-const URL = `${HOST}:${PORT}`;
 
 //------------------------------------------------------------------------------
 // Application
 
 const Application = (props) => {
-  // Set state
-  const [state, setState] = useState({
-    day: 'Monday',
-    days: [],
-    appointments: {},
-  });
+  //----------------------------------------------------------------------------
+  // Use a hook to manage the app state
 
-  // Fetch data
-  useEffect(() => {
-    Promise.all([
-      axios.get(`${URL}/api/days`),
-      axios.get(`${URL}/api/appointments`),
-      axios.get(`${URL}/api/interviewers`),
-    ])
-      .then(
-        ([{ data: days }, { data: appointments }, { data: interviewers }]) => {
-          setState((prev) => ({ ...prev, days, appointments, interviewers }));
-        }
-      )
-      .catch((err) => console.error(err));
-  }, []); // Run only on initial render
+  const { state, setDay, bookInterview, cancelInterview } =
+    useApplicationData();
 
-  // Process data with selectors
+  //----------------------------------------------------------------------------
+  // Process the data with selectors
+
   const interviewers = getInterviewersForDay(state, state.day);
 
   const appointments = getAppointmentsForDay(state, state.day).map(
-    (appointment) => ({
-      ...appointment,
-      interview: getInterview(state, appointment.interview),
-    })
+    (appointment) => (
+      <Appointment
+        key={appointment.id}
+        {...appointment}
+        interview={getInterview(state, appointment.interview)}
+        interviewers={interviewers}
+        bookInterview={bookInterview}
+        cancelInterview={cancelInterview}
+      />
+    )
   );
 
-  // Define event handlers
-  const setDay = (day) => setState((prev) => ({ ...prev, day }));
+  //----------------------------------------------------------------------------
+  // Assemble the component
 
-  // Book interview
-  const bookInterview = (id, interview) => {
-    const appointment = {
-      ...state.appointments[id],
-      interview: { ...interview },
-    };
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment,
-    };
-
-    // Return promise so function is thenable
-    return axios
-      .put(`${URL}/api/appointments/${id}`, { interview })
-      .then(() => setState((prev) => ({ ...prev, appointments })));
-  };
-
-  // Cancel interview
-  const cancelInterview = (id) => {
-    const appointment = {
-      ...state.appointments[id],
-      interview: null,
-    };
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment,
-    };
-
-    // Return promise so function is thenable
-    return axios
-      .delete(`${URL}/api/appointments/${id}`)
-      .then(() => setState((prev) => ({ ...prev, appointments })));
-  };
-
-  // Assemble component
   return (
     <main className="layout">
       <section className="sidebar">
@@ -126,15 +82,7 @@ const Application = (props) => {
 
       {/* Schedule */}
       <section className="schedule">
-        {appointments.map((appointment) => (
-          <Appointment
-            key={appointment.id}
-            interviewers={interviewers}
-            bookInterview={bookInterview}
-            cancelInterview={cancelInterview}
-            {...appointment}
-          />
-        ))}
+        {appointments}
         <Appointment key="last" time="5pm" />
       </section>
     </main>
