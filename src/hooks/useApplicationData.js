@@ -8,6 +8,8 @@
 import { useState, useEffect } from 'react';
 import axios from 'axios';
 
+import { getDayIndex } from '../helpers/selectors';
+
 //------------------------------------------------------------------------------
 // Constants
 
@@ -26,6 +28,7 @@ const useApplicationData = () => {
     day: 'Monday',
     days: [],
     appointments: {},
+    interviewers: {},
   });
 
   // Fetch data once on initial render
@@ -49,41 +52,52 @@ const useApplicationData = () => {
   const setDay = (day) => setState((prev) => ({ ...prev, day }));
 
   //----------------------------------------------------------------------------
-  // CREATE: Book an interview
+  // Helpers
 
-  const bookInterview = (id, interview) => {
+  const updateAppointments = (state, id, interview) => {
     const appointment = {
       ...state.appointments[id],
-      interview: { ...interview },
+      interview: interview ? { ...interview } : null,
     };
-    const appointments = {
+
+    return {
       ...state.appointments,
       [id]: appointment,
     };
+  };
 
-    // Return promise so function is thenable
+  const countSpots = (day, appointments) =>
+    day.appointments.reduce((count, appt) => {
+      return count + (appointments[appt].interview === null);
+    }, 0);
+
+  const updateDays = (state, appointments) => {
+    const days = [...state.days];
+    const index = getDayIndex(state, state.day);
+    days[index].spots = countSpots(days[index], appointments);
+    return days;
+  };
+
+  //----------------------------------------------------------------------------
+  // CREATE: Book an interview
+
+  const bookInterview = (id, interview) => {
+    const appointments = updateAppointments(state, id, interview);
+    const days = updateDays(state, appointments);
     return axios
       .put(`${URL}/api/appointments/${id}`, { interview })
-      .then(() => setState((prev) => ({ ...prev, appointments })));
+      .then(() => setState((prev) => ({ ...prev, days, appointments })));
   };
 
   //----------------------------------------------------------------------------
   // DELETE: Cancel an interview
 
   const cancelInterview = (id) => {
-    const appointment = {
-      ...state.appointments[id],
-      interview: null,
-    };
-    const appointments = {
-      ...state.appointments,
-      [id]: appointment,
-    };
-
-    // Return promise so function is thenable
+    const appointments = updateAppointments(state, id, null);
+    const days = updateDays(state, appointments);
     return axios
       .delete(`${URL}/api/appointments/${id}`)
-      .then(() => setState((prev) => ({ ...prev, appointments })));
+      .then(() => setState((prev) => ({ ...prev, days, appointments })));
   };
 
   return { state, setDay, bookInterview, cancelInterview };
