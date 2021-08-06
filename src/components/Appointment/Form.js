@@ -12,13 +12,13 @@ import InterviewerList from '../InterviewerList';
 // Props | Edit:
 //   - name: String
 //   - interviewers: Array
-//   - interviewer: Number
+//   - interviewerId: Number
 //   - onSave(): Function
 //   - onCancel(): Function
 //
 // State:
 //   - name: String
-//   - interviewer: Number
+//   - interviewerId: Number
 //
 // Actions:
 //   - setName(): Function
@@ -26,11 +26,13 @@ import InterviewerList from '../InterviewerList';
 
 const Form = (props) => {
   const [name, setName] = useState(props.name || '');
-  const [interviewer, setInterviewer] = useState(props.interviewer || null);
+  const [interviewerId, setInterviewerId] = useState(
+    props.interviewerId || null
+  );
 
   const reset = () => {
     setName('');
-    setInterviewer(null);
+    setInterviewerId(null);
   };
 
   const cancel = () => {
@@ -39,7 +41,7 @@ const Form = (props) => {
   };
 
   const save = () => {
-    props.onSave(name, interviewer);
+    props.onSave(name, interviewerId);
   };
 
   return (
@@ -57,8 +59,8 @@ const Form = (props) => {
         </form>
         <InterviewerList
           interviewers={props.interviewers}
-          value={interviewer}
-          onChange={setInterviewer}
+          value={interviewerId}
+          onChange={setInterviewerId}
         />
       </section>
       <section className="appointment__card-right">

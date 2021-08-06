@@ -39,12 +39,13 @@ const Appointment = (props) => {
   // Define state transition handlers
   const onCancel = () => back();
   const onAdd = () => transition(CREATE);
+  const onEdit = () => transition(EDIT);
   const onDelete = () => transition(CONFIRM);
 
-  const onSave = (name, interviewer) => {
+  const onSave = (name, interviewerId) => {
     transition(SAVING);
     props
-      .bookInterview(props.id, { student: name, interviewer })
+      .bookInterview(props.id, { student: name, interviewer: interviewerId })
       .then(() => transition(SHOW));
   };
 
@@ -53,15 +54,13 @@ const Appointment = (props) => {
     props.cancelInterview(props.id).then(() => transition(EMPTY));
   };
 
-  const onEdit = () => {
-    //
-  };
-
   // Assemble component
   return (
     <article className="appointment">
       <Header time={props.time} />
       {mode === EMPTY && <Empty onAdd={onAdd} />}
+      {mode === SAVING && <Status message="Saving" />}
+      {mode === DELETING && <Status message="Deleting" />}
       {mode === SHOW && (
         <Show
           student={props.interview.student}
@@ -77,17 +76,15 @@ const Appointment = (props) => {
           onCancel={onCancel}
         />
       )}
-      {mode === SAVING && <Status message="Saving" />}
-      {mode === DELETING && <Status message="Deleting" />}
-      {/* {mode === EDIT && (
+      {mode === EDIT && (
         <Form
-          name="Lydia Miller-Jones"
-          interviewers={props.interview.interviewer}
-          interviewer={2}
-          onSave={'onSave'}
-          onCancel={'onCancel'}
+          name={props.interview.student}
+          interviewerId={props.interview.interviewer.id}
+          interviewers={props.interviewers}
+          onSave={onSave}
+          onCancel={onCancel}
         />
-      )} */}
+      )}
       {mode === CONFIRM && (
         <Confirm
           message="Delete the appointment?"
