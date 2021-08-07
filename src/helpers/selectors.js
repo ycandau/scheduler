@@ -3,16 +3,6 @@
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
-// Get the index of a day in the days array based on its name
-
-const getDayIndex = (state, dayName) => {
-  for (let i = 0; i < state.days.length; i++) {
-    if (state.days[i].name === dayName) return i;
-  }
-  return null;
-};
-
-//------------------------------------------------------------------------------
 // Get all appointments for a given day
 
 const getAppointmentsForDay = (state, day) => {
@@ -40,9 +30,4 @@ const getInterview = (state, interview) =>
   }) ||
   null;
 
-export {
-  getDayIndex,
-  getAppointmentsForDay,
-  getInterviewersForDay,
-  getInterview,
-};
+export { getAppointmentsForDay, getInterviewersForDay, getInterview };

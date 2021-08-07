@@ -10,6 +10,7 @@ import Header from './Header';
 import Show from './Show';
 import Status from './Status';
 
+import { useEffect } from 'react';
 import useVisualMode from '../../hooks/useVisualMode';
 
 //------------------------------------------------------------------------------
@@ -22,6 +23,7 @@ import useVisualMode from '../../hooks/useVisualMode';
 //   - cancelInterview(): Function
 
 const Appointment = (props) => {
+  // Constants
   const EMPTY = 'EMPTY';
   const SHOW = 'SHOW';
   const CREATE = 'CREATE';
@@ -62,6 +64,12 @@ const Appointment = (props) => {
       .catch((err) => transition(ERROR_DELETE, replace));
   };
 
+  // Use effect hook to update mode on websocket messages
+  useEffect(() => {
+    if (props.interview && mode === EMPTY) transition(SHOW);
+    if (props.interview === null && mode === SHOW) transition(EMPTY);
+  }, [props.interview, transition, mode]);
+
   // Assemble component
   return (
     <article className="appointment">
@@ -69,7 +77,7 @@ const Appointment = (props) => {
       {mode === EMPTY && <Empty onAdd={onAdd} />}
       {mode === SAVING && <Status message="Saving" />}
       {mode === DELETING && <Status message="Deleting" />}
-      {mode === SHOW && (
+      {mode === SHOW && props.interview && (
         <Show
           student={props.interview.student}
           interviewer={props.interview.interviewer}

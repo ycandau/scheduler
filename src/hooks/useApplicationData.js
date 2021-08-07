@@ -8,8 +8,6 @@
 import { useReducer, useEffect } from 'react';
 import axios from 'axios';
 
-import { getDayIndex } from '../helpers/selectors';
-
 //------------------------------------------------------------------------------
 // Constants
 
@@ -31,9 +29,9 @@ const useApplicationData = () => {
   //----------------------------------------------------------------------------
   // Helpers
 
-  const getDay = (days, dayName) => {
+  const getDayFromApptId = (days, id) => {
     for (let i = 0; i < days.length; i++) {
-      if (days[i].name === dayName) return [i, days[i]];
+      if (days[i].appointments.includes(id)) return [i, days[i]];
     }
     return [null, null];
   };
@@ -59,7 +57,7 @@ const useApplicationData = () => {
         const appointments = { ...state.appointments, [id]: appointment };
 
         // Update spots
-        const [index, day] = getDay(state.days, state.day);
+        const [index, day] = getDayFromApptId(state.days, id);
         const spots = countSpots(day, appointments);
         const days = [...state.days];
         days[index] = { ...day, spots };
@@ -72,6 +70,23 @@ const useApplicationData = () => {
         );
     }
   };
+
+  //----------------------------------------------------------------------------
+  // Websocket
+
+  useEffect(() => {
+    const ws = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
+
+    ws.onopen = () => ws.send('ping');
+
+    ws.onmessage = (event) => {
+      const message = JSON.parse(event.data);
+      if (message.type === SET_INTERVIEW) dispatch(message);
+    };
+
+    // Close on cleanup
+    return () => ws.close();
+  }, []);
 
   //----------------------------------------------------------------------------
   // State
