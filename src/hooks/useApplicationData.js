@@ -31,29 +31,17 @@ const useApplicationData = () => {
   //----------------------------------------------------------------------------
   // Helpers
 
-  const updateAppointments = (state, id, interview) => {
-    const appointment = {
-      ...state.appointments[id],
-      interview: interview ? { ...interview } : null,
-    };
-
-    return {
-      ...state.appointments,
-      [id]: appointment,
-    };
+  const getDay = (days, dayName) => {
+    for (let i = 0; i < days.length; i++) {
+      if (days[i].name === dayName) return [i, days[i]];
+    }
+    return [null, null];
   };
 
   const countSpots = (day, appointments) =>
     day.appointments.reduce((count, appt) => {
       return count + (appointments[appt].interview === null);
     }, 0);
-
-  const updateDays = (state, appointments) => {
-    const days = [...state.days];
-    const index = getDayIndex(state, state.day);
-    days[index].spots = countSpots(days[index], appointments);
-    return days;
-  };
 
   //----------------------------------------------------------------------------
   // Reducer
@@ -63,10 +51,19 @@ const useApplicationData = () => {
       case SET_APPLICATION_DATA:
       case SET_DAY:
         return { ...state, ...action.data };
+
+      // Immutable update to create, edit and delete interviews
       case SET_INTERVIEW:
         const { id, interview } = action;
-        const appointments = updateAppointments(state, id, interview);
-        const days = updateDays(state, appointments);
+        const appointment = { ...state.appointments[id], interview };
+        const appointments = { ...state.appointments, [id]: appointment };
+
+        // Update spots
+        const [index, day] = getDay(state.days, state.day);
+        const spots = countSpots(day, appointments);
+        const days = [...state.days];
+        days[index] = { ...day, spots };
+
         return { ...state, appointments, days };
 
       default:
