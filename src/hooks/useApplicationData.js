@@ -29,17 +29,20 @@ const useApplicationData = () => {
   //----------------------------------------------------------------------------
   // Helpers
 
-  const getDayFromApptId = (days, id) => {
-    for (let i = 0; i < days.length; i++) {
-      if (days[i].appointments.includes(id)) return [i, days[i]];
+  // Find an array element that matches a predicate
+  const find = (predicate) => (array) => {
+    for (let i = 0; i < array.length; i++) {
+      if (predicate(array[i])) return [i, array[i]];
     }
     return [null, null];
   };
 
-  const countSpots = (day, appointments) =>
-    day.appointments.reduce((count, appt) => {
-      return count + (appointments[appt].interview === null);
-    }, 0);
+  // Predicate returns true if the day includes an appointment
+  const dayIncludesAppt = (id) => (day) => day.appointments.includes(id);
+
+  // Reducer to count the appointments that have null interviews
+  const toCountSpots = (appointments) => (count, appt) =>
+    count + (appointments[appt].interview === null);
 
   //----------------------------------------------------------------------------
   // Reducer
@@ -57,8 +60,8 @@ const useApplicationData = () => {
         const appointments = { ...state.appointments, [id]: appointment };
 
         // Update spots
-        const [index, day] = getDayFromApptId(state.days, id);
-        const spots = countSpots(day, appointments);
+        const [index, day] = find(dayIncludesAppt(id))(state.days);
+        const spots = day.appointments.reduce(toCountSpots(appointments), 0);
         const days = [...state.days];
         days[index] = { ...day, spots };
 
