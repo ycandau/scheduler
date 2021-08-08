@@ -8,6 +8,8 @@
 import { useReducer, useEffect } from 'react';
 import axios from 'axios';
 
+import { find, count } from '../helpers/util';
+
 //------------------------------------------------------------------------------
 // Constants
 
@@ -27,22 +29,14 @@ const useApplicationData = () => {
   const SET_APPLICATION_DATA = 'SET_APPLICATION_DATA';
 
   //----------------------------------------------------------------------------
-  // Helpers
+  // Predicates
 
-  // Find an array element that matches a predicate
-  const find = (predicate) => (array) => {
-    for (let i = 0; i < array.length; i++) {
-      if (predicate(array[i])) return [i, array[i]];
-    }
-    return [null, null];
-  };
-
-  // Predicate returns true if the day includes an appointment
+  // true if the day includes an appointment
   const dayIncludesAppt = (id) => (day) => day.appointments.includes(id);
 
-  // Reducer to count the appointments that have null interviews
-  const toCountSpots = (appointments) => (count, appt) =>
-    count + (appointments[appt].interview === null);
+  // true if the appointment is empty (null)
+  const apptIsEmpty = (appointments) => (appt) =>
+    appointments[appt].interview === null;
 
   //----------------------------------------------------------------------------
   // Reducer
@@ -55,13 +49,13 @@ const useApplicationData = () => {
 
       // Immutable update to create, edit and delete interviews
       case SET_INTERVIEW:
-        const { id, interview } = action;
-        const appointment = { ...state.appointments[id], interview };
-        const appointments = { ...state.appointments, [id]: appointment };
+        const { id: apptId, interview } = action;
+        const appointment = { ...state.appointments[apptId], interview };
+        const appointments = { ...state.appointments, [apptId]: appointment };
 
         // Update spots
-        const [index, day] = find(dayIncludesAppt(id))(state.days);
-        const spots = day.appointments.reduce(toCountSpots(appointments), 0);
+        const [index, day] = find(dayIncludesAppt(apptId))(state.days);
+        const spots = count(apptIsEmpty(appointments))(day.appointments);
         const days = [...state.days];
         days[index] = { ...day, spots };
 
