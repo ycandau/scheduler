@@ -1,5 +1,5 @@
 //------------------------------------------------------------------------------
-// Custom hook:  useApplicationData
+// Custom hook: useApplicationData()
 //------------------------------------------------------------------------------
 
 //------------------------------------------------------------------------------
@@ -32,11 +32,12 @@ const useApplicationData = () => {
   // Predicates
 
   // true if the day includes an appointment
-  const dayIncludesAppt = (id) => (day) => day.appointments.includes(id);
+  const dayIncludesAppt = (apptId) => (day) =>
+    day.appointments.includes(apptId);
 
   // true if the appointment is empty (null)
-  const apptIsEmpty = (appointments) => (appt) =>
-    appointments[appt].interview === null;
+  const apptIsEmpty = (appointments) => (apptId) =>
+    appointments[apptId].interview === null;
 
   //----------------------------------------------------------------------------
   // Reducer
@@ -49,11 +50,12 @@ const useApplicationData = () => {
 
       // Immutable update to create, edit and delete interviews
       case SET_INTERVIEW:
+        // Appointments
         const { id: apptId, interview } = action;
         const appointment = { ...state.appointments[apptId], interview };
         const appointments = { ...state.appointments, [apptId]: appointment };
 
-        // Update spots
+        // Days (depends on appointments)
         const [index, day] = find(dayIncludesAppt(apptId))(state.days);
         const spots = count(apptIsEmpty(appointments))(day.appointments);
         const days = [...state.days];
