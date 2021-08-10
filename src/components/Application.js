@@ -26,9 +26,8 @@ import {
 } from '../helpers/selectors';
 
 //------------------------------------------------------------------------------
-// Application
 
-const Application = (props) => {
+const Application = () => {
   //----------------------------------------------------------------------------
   // Use a hook to manage the app state
 

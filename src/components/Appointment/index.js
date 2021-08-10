@@ -14,15 +14,15 @@ import { useEffect } from 'react';
 import useVisualMode from '../../hooks/useVisualMode';
 
 //------------------------------------------------------------------------------
-// Props:
-//   - id: Number
-//   - time: String
-//   - interview: Object
-//   - interviewers: Array
-//   - bookInterview(): Function
-//   - cancelInterview(): Function
 
-const Appointment = (props) => {
+const Appointment = ({
+  id,
+  time,
+  interview,
+  interviewers,
+  bookInterview,
+  cancelInterview,
+}) => {
   // Constants
   const EMPTY = 'EMPTY';
   const SHOW = 'SHOW';
@@ -35,9 +35,7 @@ const Appointment = (props) => {
   const ERROR_DELETE = 'ERROR_DELETE';
 
   // Use custom hook to manage display mode
-  const { mode, transition, back } = useVisualMode(
-    props.interview ? SHOW : EMPTY
-  );
+  const { mode, transition, back } = useVisualMode(interview ? SHOW : EMPTY);
 
   // Define state transition handlers
   const onCancel = () => back();
@@ -49,8 +47,7 @@ const Appointment = (props) => {
     const interview = { student: name, interviewer: interviewerId };
     const replace = true;
     transition(SAVING);
-    props
-      .bookInterview(props.id, interview)
+    bookInterview(id, interview)
       .then(() => transition(SHOW))
       .catch((err) => transition(ERROR_SAVE, replace));
   };
@@ -58,45 +55,40 @@ const Appointment = (props) => {
   const onConfirm = () => {
     const replace = true;
     transition(DELETING, replace);
-    props
-      .cancelInterview(props.id)
+    cancelInterview(id)
       .then(() => transition(EMPTY))
       .catch((err) => transition(ERROR_DELETE, replace));
   };
 
   // Use effect hook to update mode on websocket messages
   useEffect(() => {
-    if (props.interview && mode === EMPTY) transition(SHOW);
-    if (props.interview === null && mode === SHOW) transition(EMPTY);
-  }, [props.interview, transition, mode]);
+    if (interview && mode === EMPTY) transition(SHOW);
+    if (interview === null && mode === SHOW) transition(EMPTY);
+  }, [interview, transition, mode]);
 
   // Assemble component
   return (
     <article className="appointment" data-testid="appointment">
-      <Header time={props.time} />
+      <Header time={time} />
       {mode === EMPTY && <Empty onAdd={onAdd} />}
       {mode === SAVING && <Status message="Saving" />}
       {mode === DELETING && <Status message="Deleting" />}
-      {mode === SHOW && props.interview && (
+      {mode === SHOW && interview && (
         <Show
-          student={props.interview.student}
-          interviewer={props.interview.interviewer}
+          student={interview.student}
+          interviewer={interview.interviewer}
           onEdit={onEdit}
           onDelete={onDelete}
         />
       )}
       {mode === CREATE && (
-        <Form
-          interviewers={props.interviewers}
-          onSave={onSave}
-          onCancel={onCancel}
-        />
+        <Form interviewers={interviewers} onSave={onSave} onCancel={onCancel} />
       )}
       {mode === EDIT && (
         <Form
-          name={props.interview.student}
-          interviewerId={props.interview.interviewer.id}
-          interviewers={props.interviewers}
+          name={interview.student}
+          interviewerId={interview.interviewer.id}
+          interviewers={interviewers}
           onSave={onSave}
           onCancel={onCancel}
         />

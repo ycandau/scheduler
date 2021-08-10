@@ -1,16 +1,14 @@
 import React from 'react';
 
 //------------------------------------------------------------------------------
-// Props:
-//   -onAdd(): Function
 
-const Empty = (props) => (
+const Empty = ({ onAdd }) => (
   <main className="appointment__add">
     <img
       className="appointment__add-button"
       src="images/add.png"
       alt="Add"
-      onClick={props.onAdd}
+      onClick={onAdd}
     />
   </main>
 );
