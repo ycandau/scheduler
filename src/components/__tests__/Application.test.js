@@ -8,10 +8,9 @@ import {
   getByAltText,
   getByDisplayValue,
   getAllByTestId,
+  queryByText,
   waitForElement,
   fireEvent,
-  prettyDOM,
-  queryByText,
 } from '@testing-library/react';
 
 import Application from 'components/Application';
@@ -136,6 +135,42 @@ describe('Application', () => {
 
     await waitForElement(() =>
       getByText(appointment, 'Could not book the appointment.')
+    );
+
+    fireEvent.click(getByAltText(appointment, 'Close'));
+
+    expect(getByText(appointment, 'Archie Cohen')).toBeInTheDocument();
+
+    const days = getAllByTestId(container, 'day');
+    const day = days.find((d) => queryByText(d, 'Monday'));
+
+    expect(getByText(day, '1 spot remaining')).toBeInTheDocument();
+  });
+
+  //----------------------------------------------------------------------------
+
+  it(`shows the delete error when failing to delete an existing
+      appointment`, async () => {
+    const { container } = render(<Application />);
+
+    await waitForElement(() => getByText(container, 'Archie Cohen'));
+
+    const appointment = getAllByTestId(container, 'appointment').find((appt) =>
+      queryByText(appt, 'Archie Cohen')
+    );
+    fireEvent.click(getByAltText(appointment, 'Delete'));
+
+    expect(
+      getByText(appointment, 'Delete the appointment?')
+    ).toBeInTheDocument();
+
+    axios.delete.mockRejectedValueOnce();
+    fireEvent.click(getByText(appointment, 'Confirm'));
+
+    expect(getByText(appointment, 'Deleting')).toBeInTheDocument();
+
+    await waitForElement(() =>
+      getByText(appointment, 'Could not cancel the appointment.')
     );
 
     fireEvent.click(getByAltText(appointment, 'Close'));
