@@ -11,13 +11,6 @@ import axios from 'axios';
 import { find, count } from '../helpers/util';
 
 //------------------------------------------------------------------------------
-// Constants
-
-const HOST = 'http://localhost';
-const PORT = 8001;
-const URL = `${HOST}:${PORT}`;
-
-//------------------------------------------------------------------------------
 // Hook
 
 const useApplicationData = () => {
@@ -100,9 +93,9 @@ const useApplicationData = () => {
   // Fetch data once on initial render
   useEffect(() => {
     Promise.all([
-      axios.get(`${URL}/api/days`),
-      axios.get(`${URL}/api/appointments`),
-      axios.get(`${URL}/api/interviewers`),
+      axios.get('/api/days'),
+      axios.get('/api/appointments'),
+      axios.get('/api/interviewers'),
     ])
       .then(
         ([{ data: days }, { data: appointments }, { data: interviewers }]) =>
@@ -124,7 +117,7 @@ const useApplicationData = () => {
 
   const bookInterview = (id, interview) =>
     axios
-      .put(`${URL}/api/appointments/${id}`, { interview })
+      .put(`/api/appointments/${id}`, { interview })
       .then(() => dispatch({ type: SET_INTERVIEW, id, interview }));
 
   //----------------------------------------------------------------------------
@@ -132,7 +125,7 @@ const useApplicationData = () => {
 
   const cancelInterview = (id) =>
     axios
-      .delete(`${URL}/api/appointments/${id}`)
+      .delete(`/api/appointments/${id}`)
       .then(() => dispatch({ type: SET_INTERVIEW, id, interview: null }));
 
   return { state, setDay, bookInterview, cancelInterview };
