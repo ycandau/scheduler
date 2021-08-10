@@ -42,7 +42,7 @@ storiesOf('Button', module)
   ));
 
 //------------------------------------------------------------------------------
-// Day List Item
+// Day list item
 
 storiesOf('DayListItem', module)
   .addParameters({
@@ -60,7 +60,7 @@ storiesOf('DayListItem', module)
   ));
 
 //------------------------------------------------------------------------------
-// Day List
+// Day list
 
 const days = [
   {
@@ -92,7 +92,7 @@ storiesOf('DayList', module)
   ));
 
 //------------------------------------------------------------------------------
-// Interviewer List Item
+// Interviewer list item
 
 const interviewer = {
   id: 1,
@@ -129,7 +129,7 @@ storiesOf('InterviewerListItem', module)
   ));
 
 //------------------------------------------------------------------------------
-// Interviewer List
+// Interviewer list
 
 const interviewers = [
   { id: 1, name: 'Sylvia Palmer', avatar: 'https://i.imgur.com/LpaY82x.png' },
