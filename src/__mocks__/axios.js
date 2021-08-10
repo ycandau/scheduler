@@ -64,6 +64,9 @@ const axios = {
     const data = fixtures[url.replace(/^\/api\//, '')];
     return Promise.resolve({ status: 200, statusText: 'OK', data });
   },
+
+  put: (url) => Promise.resolve({ status: 204, statusText: 'No Content' }),
+
   defaults: { baseURL: '' },
 };
 
