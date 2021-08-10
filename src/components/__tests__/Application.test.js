@@ -28,13 +28,18 @@ describe('Application', () => {
     expect(getByText(container, 'Leopold Silvers')).toBeInTheDocument();
   });
 
+  //----------------------------------------------------------------------------
+
   it(`loads data, books an interview, and reduces the spots remaining for
       Monday by 1`, async () => {
     const { container } = render(<Application />);
 
     await waitForElement(() => getByText(container, 'Archie Cohen'));
 
-    const appointment = getAllByTestId(container, 'appointment')[0];
+    const appointment = getAllByTestId(container, 'appointment').find((appt) =>
+      getByAltText(appt, 'Add')
+    );
+
     fireEvent.click(getByAltText(appointment, 'Add'));
 
     const input = getByTestId(appointment, 'student-name-input');
@@ -51,4 +56,54 @@ describe('Application', () => {
 
     expect(getByText(day, 'no spots remaining')).toBeInTheDocument();
   });
+
+  //----------------------------------------------------------------------------
+
+  it(`loads data, cancels an interview and increases the spots remaining for
+      Monday by 1`, async () => {
+    const { container } = render(<Application />);
+
+    await waitForElement(() => getByText(container, 'Archie Cohen'));
+
+    const appointment = getAllByTestId(container, 'appointment').find((appt) =>
+      queryByText(appt, 'Archie Cohen')
+    );
+    fireEvent.click(getByAltText(appointment, 'Delete'));
+
+    expect(
+      getByText(appointment, 'Delete the appointment?')
+    ).toBeInTheDocument();
+
+    fireEvent.click(getByText(appointment, 'Confirm'));
+
+    expect(getByText(appointment, 'Deleting')).toBeInTheDocument();
+
+    await waitForElement(() => getByAltText(appointment, 'Add'));
+    const days = getAllByTestId(container, 'day');
+    const day = days.find((d) => queryByText(d, 'Monday'));
+
+    expect(getByText(day, '2 spots remaining')).toBeInTheDocument();
+  });
+
+  //----------------------------------------------------------------------------
+
+  it(`loads data, edits an interview and keeps the spots remaining for Monday
+      the same`, async () => {
+    //
+  });
+
+  //----------------------------------------------------------------------------
+
+  it('shows the save error when failing to save an appointment', async () => {
+    //
+  });
+
+  //----------------------------------------------------------------------------
+
+  it(`shows the delete error when failing to delete an existing
+      appointment`, async () => {
+    //
+  });
+
+  //----------------------------------------------------------------------------
 });

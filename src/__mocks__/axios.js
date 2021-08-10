@@ -67,6 +67,8 @@ const axios = {
 
   put: (url) => Promise.resolve({ status: 204, statusText: 'No Content' }),
 
+  delete: (url) => Promise.resolve({ status: 204, statusText: 'No Content' }),
+
   defaults: { baseURL: '' },
 };
 
