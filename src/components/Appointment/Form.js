@@ -29,6 +29,7 @@ const Form = ({ name, interviewerId, interviewers, onSave, onCancel }) => {
     if (interviewerIdLocal === null) {
       return setError('An interviewer has to be chosen');
     }
+    setError('');
     onSave(nameLocal, interviewerIdLocal);
   };
 
