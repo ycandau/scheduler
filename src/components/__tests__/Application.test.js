@@ -10,6 +10,7 @@ import {
   waitForElement,
   fireEvent,
   prettyDOM,
+  queryByText,
 } from '@testing-library/react';
 
 import Application from 'components/Application';
@@ -32,14 +33,22 @@ describe('Application', () => {
     const { container } = render(<Application />);
 
     await waitForElement(() => getByText(container, 'Archie Cohen'));
-    const appointment = getAllByTestId(container, 'appointment')[0];
 
+    const appointment = getAllByTestId(container, 'appointment')[0];
     fireEvent.click(getByAltText(appointment, 'Add'));
+
     const input = getByTestId(appointment, 'student-name-input');
     fireEvent.change(input, { target: { value: 'Lydia' } });
     fireEvent.click(getByAltText(appointment, 'Sylvia Palmer'));
     fireEvent.click(getByText(appointment, 'Save'));
 
-    console.log(prettyDOM(appointment));
+    expect(getByText(appointment, 'Saving')).toBeInTheDocument();
+
+    await waitForElement(() => getByText(appointment, 'Lydia'));
+
+    const days = getAllByTestId(container, 'day');
+    const day = days.find((d) => queryByText(d, 'Monday'));
+
+    expect(getByText(day, 'no spots remaining')).toBeInTheDocument();
   });
 });
