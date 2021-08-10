@@ -8,61 +8,16 @@
 import { useReducer, useEffect } from 'react';
 import axios from 'axios';
 
-import { find, count } from '../helpers/util';
+import reducer, {
+  SET_DAY,
+  SET_INTERVIEW,
+  SET_APPLICATION_DATA,
+} from 'reducers/application';
 
 //------------------------------------------------------------------------------
 // Hook
 
 const useApplicationData = () => {
-  //----------------------------------------------------------------------------
-  // Action types
-
-  const SET_DAY = 'SET_DAY';
-  const SET_INTERVIEW = 'SET_INTERVIEW';
-  const SET_APPLICATION_DATA = 'SET_APPLICATION_DATA';
-
-  //----------------------------------------------------------------------------
-  // Predicates
-
-  // true if the day includes an appointment
-  const dayIncludesAppt = (apptId) => (day) =>
-    day.appointments.includes(apptId);
-
-  // true if the appointment is empty (null)
-  const apptIsEmpty = (appointments) => (apptId) =>
-    appointments[apptId].interview === null;
-
-  //----------------------------------------------------------------------------
-  // Reducer
-
-  const reducer = (state, action) => {
-    switch (action.type) {
-      case SET_APPLICATION_DATA:
-      case SET_DAY:
-        return { ...state, ...action.data };
-
-      // Immutable update to create, edit and delete interviews
-      case SET_INTERVIEW:
-        // Appointments
-        const { id: apptId, interview } = action;
-        const appointment = { ...state.appointments[apptId], interview };
-        const appointments = { ...state.appointments, [apptId]: appointment };
-
-        // Days (depends on appointments)
-        const [index, day] = find(dayIncludesAppt(apptId))(state.days);
-        const spots = count(apptIsEmpty(appointments))(day.appointments);
-        const days = [...state.days];
-        days[index] = { ...day, spots };
-
-        return { ...state, appointments, days };
-
-      default:
-        throw new Error(
-          `Tried to reduce with unsupported action type: ${action.type}`
-        );
-    }
-  };
-
   //----------------------------------------------------------------------------
   // Websocket
 
