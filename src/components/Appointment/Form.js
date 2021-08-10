@@ -4,30 +4,12 @@ import Button from '../Button';
 import InterviewerList from '../InterviewerList';
 
 //------------------------------------------------------------------------------
-// Props | Created:
-//   - interviewers: Array
-//   - onSave(): Function
-//   - onCancel(): Function
-//
-// Props | Edit:
-//   - name: String
-//   - interviewers: Array
-//   - interviewerId: Number
-//   - onSave(): Function
-//   - onCancel(): Function
-//
-// State:
-//   - name: String
-//   - interviewerId: Number
-//
-// Actions:
-//   - setName(): Function
-//   - setInterviewer(): Function
 
-const Form = (props) => {
-  const [name, setName] = useState(props.name || '');
-  const [interviewerId, setInterviewerId] = useState(
-    props.interviewerId || null
+const Form = ({ name, interviewerId, interviewers, onSave, onCancel }) => {
+  const [error, setError] = useState('');
+  const [nameLocal, setName] = useState(name || '');
+  const [interviewerIdLocal, setInterviewerId] = useState(
+    interviewerId || null
   );
 
   const reset = () => {
@@ -37,11 +19,17 @@ const Form = (props) => {
 
   const cancel = () => {
     reset();
-    props.onCancel();
+    onCancel();
   };
 
-  const save = () => {
-    props.onSave(name, interviewerId);
+  const validate = () => {
+    if (nameLocal === '') {
+      return setError('Student name cannot be blank');
+    }
+    if (interviewerIdLocal === null) {
+      return setError('An interviewer has to be chosen');
+    }
+    onSave(nameLocal, interviewerIdLocal);
   };
 
   return (
@@ -53,13 +41,15 @@ const Form = (props) => {
             name="name"
             type="text"
             placeholder="Enter Student Name"
-            value={name}
+            value={nameLocal}
             onChange={(event) => setName(event.target.value)}
+            data-testid="student-name-input"
           />
         </form>
+        <section className="appointment__validation">{error}</section>
         <InterviewerList
-          interviewers={props.interviewers}
-          value={interviewerId}
+          interviewers={interviewers}
+          value={interviewerIdLocal}
           onChange={setInterviewerId}
         />
       </section>
@@ -68,7 +58,7 @@ const Form = (props) => {
           <Button onClick={cancel} danger>
             Cancel
           </Button>
-          <Button onClick={save} confirm>
+          <Button onClick={validate} confirm>
             Save
           </Button>
         </section>
