@@ -60,14 +60,18 @@ const fixtures = {
 // Mock axios module
 
 const axios = {
-  get: (url) => {
+  get: jest.fn((url) => {
     const data = fixtures[url.replace(/^\/api\//, '')];
     return Promise.resolve({ status: 200, statusText: 'OK', data });
-  },
+  }),
 
-  put: (url) => Promise.resolve({ status: 204, statusText: 'No Content' }),
+  put: jest.fn((url) =>
+    Promise.resolve({ status: 204, statusText: 'No Content' })
+  ),
 
-  delete: (url) => Promise.resolve({ status: 204, statusText: 'No Content' }),
+  delete: jest.fn((url) =>
+    Promise.resolve({ status: 204, statusText: 'No Content' })
+  ),
 
   defaults: { baseURL: '' },
 };
