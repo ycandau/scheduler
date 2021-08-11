@@ -14,7 +14,8 @@ const useApplicationData = () => {
   // Websocket
 
   useEffect(() => {
-    const ws = new WebSocket(process.env.REACT_APP_WEBSOCKET_URL);
+    const URL = process.env.REACT_APP_WEBSOCKET_URL || 'ws://localhost:8001';
+    const ws = new WebSocket(URL);
 
     ws.onopen = () => ws.send('ping');
 
