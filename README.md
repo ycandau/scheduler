@@ -14,7 +14,14 @@
 
 ## About
 
-The **Interview Scheduler** is a single page app built with [React](https://reactjs.org/) that allows a user to book an appointment with an interviewer.
+The **Interview Scheduler** is a single page app built with [React](https://reactjs.org/) which allows a user to book an appointment with an interviewer. The data is persisted by an API server using a PostgreSQL database, and updated in multi-user situations through a WebSocket connection.
+
+The development of the project was driven by a TDD approach, including:
+
+- static tests (prop-types package)
+- unit tests (Storybook, Jest and Testing Library)
+- integration tests (Jest and Testing Library)
+- end to end tests (Cypress)
 
 ---
 
@@ -53,13 +60,24 @@ git clone git@github.com:ycandau/scheduler.git
 Install all the dependencies with [npm](https://www.npmjs.com/):
 
 ```shell
-npm install
+npm i
 ```
 
-Copy the `.env.example` file to `.env.development` and fill in the URL for the WebSocket connection:
+Set up the development and testing environment with the following two files in the root of the repository:
+
+- `.env.development`:
 
 ```shell
+PORT=8000
 REACT_APP_WEBSOCKET_URL=ws://localhost:8001
+```
+
+- `.env.test`
+
+```shell
+PORT=8000
+REACT_APP_WEBSOCKET_URL=ws://localhost:8001
+CHOKIDAR_USEPOLLING=false
 ```
 
 The app also requires the [Interview Scheduler API](https://github.com/lighthouse-labs/scheduler-api) to be installed separately, and a [PostgreSQL](https://www.postgresql.org/) database set up and running in Vagrant. Instructions are provided in the Scheduler API [README](https://github.com/lighthouse-labs/scheduler-api#readme).
