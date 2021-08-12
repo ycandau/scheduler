@@ -65,7 +65,7 @@ npm i
 
 Set up the development and testing environment with the following two files in the root of the repository:
 
-- `.env.development`:
+- `.env.development`
 
 ```shell
 PORT=8000
@@ -104,6 +104,8 @@ Start the [Webpack](https://webpack.js.org/) development server (from **this** r
 npm start
 ```
 
+The `.env.development` file is needed for the server to run (see [Installation](#installation)).
+
 The development server will automatically open a browser at `http://localhost:8000/` with the app running.
 
 ---
@@ -124,6 +126,8 @@ npm run storybook
 ```
 
 #### To run Jest
+
+The `.env.test` file is needed for the tests to run (see [Installation](#installation)).
 
 ```shell
 npm test
