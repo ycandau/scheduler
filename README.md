@@ -135,11 +135,15 @@ npm run cypress
 
 ## Deployed app
 
-The app has been deployed on [Netlify](https://www.netlify.com/), with the Scheduler API deployed on [Heroku](heroku.com), and a continuous pipeline with automated testing provided by [CircleCI](https://circleci.com/).
+The app has been deployed on **Netlify**, with the Scheduler API deployed on **Heroku**.
 
 The deployed app is available at: https://yc-scheduler-lhl.netlify.app/
 
 Please note that it can take a moment for the API to start up on Heroku and serve the appointments.
+
+Continuous integration to automate testing and deployment is set up through [CircleCI](https://circleci.com/):
+
+![Continuous pipeline](./docs/continuous-pipeline.png)
 
 ---
 
