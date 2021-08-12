@@ -20,7 +20,9 @@ const useApplicationData = () => {
 
     ws.onmessage = (event) => {
       const message = JSON.parse(event.data);
-      if (message.type === SET_INTERVIEW) dispatch(message);
+      if (message.type === SET_INTERVIEW) {
+        dispatch(message);
+      }
     };
 
     // Close on cleanup

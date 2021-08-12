@@ -62,8 +62,12 @@ const Appointment = ({
 
   // Use effect hook to update mode on websocket messages
   useEffect(() => {
-    if (interview && mode === EMPTY) transition(SHOW);
-    if (interview === null && mode === SHOW) transition(EMPTY);
+    if (interview && mode === EMPTY) {
+      transition(SHOW);
+    }
+    if (interview === null && mode === SHOW) {
+      transition(EMPTY);
+    }
   }, [interview, transition, mode]);
 
   // Assemble component
