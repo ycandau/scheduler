@@ -139,7 +139,7 @@ describe('Application', () => {
 
     fireEvent.click(getByAltText(appointment, /close/i));
 
-    expect(getByText(appointment, 'Archie Cohen')).toBeInTheDocument();
+    expect(getByDisplayValue(appointment, 'Archie Cohen')).toBeInTheDocument();
 
     const days = getAllByTestId(container, 'day');
     const day = days.find((d) => queryByText(d, 'Monday'));
