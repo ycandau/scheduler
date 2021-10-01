@@ -1,4 +1,4 @@
-# Interview Scheduler
+# Interview scheduler
 
 - [About](#about)
 - [Features](#features)
